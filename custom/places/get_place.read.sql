@@ -1,0 +1,1 @@
+SELECT * FROM risalah_places WHERE id_place={{.id_place}}

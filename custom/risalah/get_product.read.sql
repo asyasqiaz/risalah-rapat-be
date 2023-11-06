@@ -1,0 +1,1 @@
+SELECT suplier.*, item.* FROM suplier JOIN item ON item.suplier_id_suplier = suplier.id_suplier

@@ -1,0 +1,15 @@
+[auth]
+enabled = true
+type = "body"
+encrypt = "MD5"
+table = "risalah_users"
+username = "username"
+password = "password"
+
+[http]
+port = 3000
+
+[cors]
+alloworigin = ["*"]
+allowheaders = ["Content-Type","Authorization","Origin","Access-Control-Request-Method"]
+allowmethods = ["GET", "DELETE", "POST", "PUT", "PATCH", "OPTIONS"]

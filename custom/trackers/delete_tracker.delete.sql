@@ -1,0 +1,1 @@
+DELETE FROM risalah_trackers WHERE id_tracker = '{{.id_tracker}}'

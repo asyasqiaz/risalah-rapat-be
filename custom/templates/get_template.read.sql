@@ -1,0 +1,1 @@
+SELECT * FROM risalah_templates WHERE id_template={{.id_template}}

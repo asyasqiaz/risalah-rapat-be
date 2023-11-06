@@ -1,0 +1,1 @@
+DELETE FROM risalah_rapat_header WHERE id_risalah_header = '{{.id_risalah_header}}'

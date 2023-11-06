@@ -1,0 +1,55 @@
+package main
+
+import (
+    "encoding/json"
+    "net/http"
+    "os"
+    "io"
+)
+
+var (
+    // HTTPVars route variables for the current request
+    HTTPVars map[string]string
+    // URLQuery parses RawQuery and returns the corresponding values
+    URLQuery map[string][]string
+)
+
+// Response return structure of the get method
+type Response struct {
+    HTTPVars map[string]string   `json:"http_vars"`
+    URLQuery map[string][]string `json:"url_query"`
+    MSG      string              `json:"msg"`
+}
+
+// GETHelloHandler plugin
+// function is invoked via [go language plugin](https://pkg.go.dev/plugin),
+// it is not possible to pass parameters, that's why there are global
+// variables to receive data from HTTP protocol
+
+// Handle file upload
+func uploadFileHandler(w http.ResponseWriter, r *http.Request) {
+    r.ParseMultipartForm(10 << 20)
+
+    file, handler, err := r.FormFile("myFile")
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusBadRequest)
+        return
+    }
+
+    defer file.Close()
+
+    // Handle the uploaded file as needed
+    // For example, save it to disk
+    f, err := os.Create(handler.Filename)
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+    defer f.Close()
+
+    io.Copy(f, file)
+
+    // Respond with a success message
+    w.WriteHeader(http.StatusOK)
+    w.Write([]byte("File uploaded successfully"))
+}
