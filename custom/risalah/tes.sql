@@ -1,13 +1,21 @@
-
--- CREATE OR REPLACE FUNCTION create_place_trigger()
--- RETURNS TRIGGER AS $$
--- BEGIN
---     INSERT INTO risalah_places (nama, status) VALUES (NEW.nama, NEW.status);
---     RETURN NEW;
--- END;
--- $$ LANGUAGE plpgsql;
-
--- CREATE TRIGGER create_place
--- AFTER INSERT ON risalah_places
--- FOR EACH ROW
--- EXECUTE FUNCTION create_place_trigger();
+SELECT
+    rh.id_risalah_header, rh.periode, rh.perihal, rh.agenda, rp.nama as tempat, 
+    CASE
+        WHEN rh.flag_final = 'Y' THEN 'Approve'
+        WHEN rh.flag_final = 'N' AND tr.flag_approve = 'N' THEN 'Belum Approve'
+        WHEN rh.flag_final = 'N' AND tr.flag_approve = 'Y' THEN 'Terkirim'
+    END AS status,
+    tr.sent_date,
+    tr.approve_date,
+    COALESCE(tr.user_internal, tr.user_eksternal) AS notulen,
+    tr.role AS tipe 
+FROM 
+    risalah_rapat_header AS rh
+JOIN 
+    risalah_places AS rp ON rh.id_place = rp.id_place
+JOIN 
+    risalah_trackers AS tr ON rh.id_risalah_header = tr.id_risalah_header
+WHERE
+    tr.id_user = {{.id_user}}
+    AND tr.flag_open = 'Y'
+{{limitOffset ._page ._page_size}}

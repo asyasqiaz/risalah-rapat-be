@@ -1,0 +1,1 @@
+SELECT * FROM risalah_users WHERE token = '{{.token}}'
